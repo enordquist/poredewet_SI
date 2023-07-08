@@ -27,7 +27,7 @@ ref_t                   = 303.15
 pcoupl                  = Berendsen
 pcoupltype              = isotropic
 tau_p                   = 10.0
-compressibility         = 1.0e-5
+compressibility         = 1.0e-5 ; note from erik: we simply forgot to revert back to 4.5e-5 after testing other values.
 ref_p                   = 1.0
 ;
 constraints             = h-bonds
