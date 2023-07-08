@@ -1,0 +1,46 @@
+# vim: ft=plumed
+#INCYLINDER MultiColVar to bias Nwater occupancy in carbon NanoTube
+#https://www.plumed.org/doc-v2.7/user-doc/html/_i_n_c_y_l_i_n_d_e_r.html
+
+# change units
+UNITS LENGTH=A ENERGY=kcal/mol
+
+# This has to be determined, use gro file
+# make some atom groups: water, pore, OUTeR layer
+pore: GROUP ATOMS=1-95
+p2: GROUP ATOMS=96-116
+p4: GROUP ATOMS=117-139 
+water: GROUP ATOMS=140-32000:3 #every third water atom is an oxygen
+
+CENTER ATOMS=pore LABEL=cen
+
+# use density to get Nwater.These are only water Oxygens, otherwise it gives ALL atoms
+###
+d: DENSITY SPECIES=water
+INCYLINDER ATOM=cen DATA=d DIRECTION=Z RADIUS={GAUSSIAN D_0=11.0 R_0=1.0} SIGMA=0.1 LOWER=-6.0 UPPER=8.0 LABEL=occ
+
+## apply a harmonic restraint to system of the form:
+## k\(x-x_0\)**2
+lwall: LOWER_WALLS ARG=occ AT=2  KAPPA=50.0
+PRINT STRIDE=1 ARG=lwall.bias FILE=wall.bias
+
+# Activate metadynamics in occ
+# depositing a Gaussian every PACE time steps,
+# with height equal to HEIGHT kJoule/mol,
+# and width SIGMA
+# Bias factor and Temp initiate Well-tempered MetaD
+#
+METAD ...
+LABEL=metad
+ARG=occ
+PACE=500
+HEIGHT=1.2
+SIGMA=1.0
+FILE=HILLS
+TEMP=300
+BIASFACTOR=5
+... METAD
+
+
+# monitor the two variables and the metadynamics bias potential
+PRINT STRIDE=500 ARG=occ,metad.bias FILE=COLVAR
