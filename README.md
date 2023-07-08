@@ -13,4 +13,4 @@ This CV has two key advantages:
 2. This CV has neighbor list implemented, which gave us ~3x faster sampling. For a big system, this makes a big difference.
 
 Pressure fluctuations can result when using the Parrinello-Rahman barostat with harmonic restraints. We tried adjusting tau_p and the compressibility, but eventually
-switched to the berendsen barostat for the small systems (70 Angstrom cubic). For the larger system (BK channel CoreMT construct, 160x160x100 Angstrom cubic), we did not have this issue.
+switched to the Berendsen barostat for the small systems (70 Angstrom cubic). For the larger system (BK channel CoreMT construct, 160x160x100 Angstrom cubic), we did not have this issue.
